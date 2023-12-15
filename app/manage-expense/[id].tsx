@@ -1,13 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { Text } from 'react-native';
 
-export default function Page() {
+export default function ManageExpense() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  return (
-    <>
-      <StatusBar style="light" />
-      <Text>Manage Expense Screen: {id}</Text>
-    </>
-  );
+  return <Text>Manage Expense Screen: {id}</Text>;
 }

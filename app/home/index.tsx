@@ -1,11 +1,5 @@
-import { Link } from 'expo-router';
-import { Text, View } from 'react-native';
+import { ExpensesMain } from './_components/ExpensesMain';
 
-export default function Page() {
-  return (
-    <View>
-      <Text>All Expenses Screen</Text>
-      <Link href={`/manage-expense/${1}`}>to manage modal</Link>
-    </View>
-  );
+export default function RecentExpenses() {
+  return <ExpensesMain periodName="Last 7 days" expenses={[]} />;
 }
