@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { FlatList } from 'react-native';
 
 import { ExpenseItem } from './ExpenseItem';
-import { ExpenseObj } from './types';
+import { ExpenseObj } from '../../../store/types';
 
 type Props = { expenses: ExpenseObj[] };
 

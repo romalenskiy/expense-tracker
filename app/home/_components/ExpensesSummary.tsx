@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { ExpenseObj } from './types';
 import { Colors } from '../../../constants/colors';
+import { ExpenseObj } from '../../../store/types';
 
 type Props = { periodName: string; expenses: ExpenseObj[] };
 
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
 
   period: {
-    fontSize: 12,
+    fontSize: 14,
     color: Colors.primary400,
   },
 

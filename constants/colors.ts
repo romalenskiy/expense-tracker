@@ -5,6 +5,7 @@ export const Colors = {
 
   primary50: '#e4d9fd',
   primary100: '#c6affc',
+  primary100_alpha50: 'rgba(198, 175, 252, 0.5)',
   primary200: '#a281f0',
   primary400: '#5721d4',
   primary500: '#3e04c3',

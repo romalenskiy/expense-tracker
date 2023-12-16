@@ -1,8 +1,9 @@
+import { router } from 'expo-router';
 import { FC } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { ExpenseObj } from './types';
 import { Colors } from '../../../constants/colors';
+import { ExpenseObj } from '../../../store/types';
 
 const dateFormatter = new Intl.DateTimeFormat();
 
@@ -10,7 +11,10 @@ type Props = { item: ExpenseObj };
 
 export const ExpenseItem: FC<Props> = ({ item }) => {
   return (
-    <Pressable>
+    <Pressable
+      style={({ pressed }) => pressed && styles.pressed}
+      onPress={() => router.push(`/manage-expense/${item.id}`)}
+    >
       <View style={styles.container}>
         <View>
           <Text style={[styles.textBase, styles.title]}>{item.title}</Text>
@@ -26,6 +30,10 @@ export const ExpenseItem: FC<Props> = ({ item }) => {
 };
 
 const styles = StyleSheet.create({
+  pressed: {
+    opacity: 0.75,
+  },
+
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',

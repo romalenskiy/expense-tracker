@@ -1,5 +1,24 @@
+import { useMemo } from 'react';
+
 import { ExpensesMain } from './_components/ExpensesMain';
+import { useStore } from '../../store/store';
 
 export default function AllExpenses() {
-  return <ExpensesMain periodName="Total" expenses={[]} />;
+  const {
+    store: { expenses },
+  } = useStore();
+
+  const sortedExpenses = useMemo(() => {
+    return expenses.sort((aExpense, bExpense) => {
+      return bExpense.date.getTime() - aExpense.date.getTime();
+    });
+  }, [expenses]);
+
+  return (
+    <ExpensesMain
+      periodName="Total"
+      expenses={sortedExpenses}
+      placeholderText="No expenses found"
+    />
+  );
 }
