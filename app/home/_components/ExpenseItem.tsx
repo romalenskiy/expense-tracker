@@ -1,31 +1,101 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { FC } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { FC, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { BaseButton, Swipeable } from 'react-native-gesture-handler';
 
 import { Colors } from '../../../constants/colors';
+import { useStoreActions } from '../../../store/storeActions';
 import { ExpenseObj } from '../../../store/types';
+
+const renderActions = (
+  direction: 'left' | 'right',
+  onDeleteClick: VoidFunction,
+) => {
+  return (
+    <View
+      style={[
+        styles.swipeActionsContainer,
+        direction === 'left'
+          ? {
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+            }
+          : { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
+      ]}
+    >
+      <BaseButton style={styles.swipeButton} onPress={onDeleteClick}>
+        <Text
+          style={{
+            color: Colors.text_primary,
+          }}
+        >
+          <Ionicons name="trash" size={24} />
+        </Text>
+      </BaseButton>
+    </View>
+  );
+};
+
+const getRenderActions =
+  (direction: 'left' | 'right', onDeleteClick: VoidFunction) => () =>
+    renderActions(direction, onDeleteClick);
 
 const dateFormatter = new Intl.DateTimeFormat();
 
 type Props = { item: ExpenseObj };
 
 export const ExpenseItem: FC<Props> = ({ item }) => {
-  return (
-    <Pressable
-      style={({ pressed }) => pressed && styles.pressed}
-      onPress={() => router.push(`/manage-expense/${item.id}`)}
-    >
-      <View style={styles.container}>
-        <View>
-          <Text style={[styles.textBase, styles.title]}>{item.title}</Text>
-          <Text style={styles.textBase}>{dateFormatter.format(item.date)}</Text>
-        </View>
+  const { deleteExpense } = useStoreActions();
 
-        <View style={styles.amountContainer}>
-          <Text style={styles.amount}>${item.amount.toFixed(2)}</Text>
-        </View>
+  const [isPressed, setIsPressed] = useState(false);
+  const [swipeActiveDirection, setSwipeActiveDirection] = useState<
+    'left' | 'right' | undefined
+  >();
+
+  const onDeleteClick = () => deleteExpense(item.id);
+
+  return (
+    <Swipeable
+      renderLeftActions={getRenderActions('left', onDeleteClick)}
+      renderRightActions={getRenderActions('right', onDeleteClick)}
+      onSwipeableWillOpen={setSwipeActiveDirection}
+      onSwipeableWillClose={() => setSwipeActiveDirection(undefined)}
+      friction={2}
+      overshootFriction={2}
+    >
+      <View
+        style={[
+          styles.container,
+          isPressed && styles.pressed,
+          swipeActiveDirection === 'left' && {
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
+          },
+          swipeActiveDirection === 'right' && {
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+          },
+        ]}
+      >
+        <BaseButton
+          style={styles.buttonContainer}
+          onActiveStateChange={setIsPressed}
+          onPress={() => router.push(`/manage-expense/${item.id}`)}
+        >
+          <View>
+            <Text style={[styles.textBase, styles.title]}>{item.title}</Text>
+            <Text style={styles.textBase}>
+              {dateFormatter.format(item.date)}
+            </Text>
+          </View>
+
+          <View style={styles.amountContainer}>
+            <Text style={styles.amount}>${item.amount.toFixed(2)}</Text>
+          </View>
+        </BaseButton>
       </View>
-    </Pressable>
+    </Swipeable>
   );
 };
 
@@ -35,8 +105,6 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     borderRadius: 6,
     elevation: 3,
     shadowColor: Colors.gray500,
@@ -44,8 +112,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.4,
     padding: 12,
-    marginVertical: 8,
     backgroundColor: Colors.primary500,
+  },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  swipeActionsContainer: { width: 64, overflow: 'hidden', borderRadius: 6 },
+
+  swipeButton: {
+    flex: 1,
+    backgroundColor: Colors.error500,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   textBase: {

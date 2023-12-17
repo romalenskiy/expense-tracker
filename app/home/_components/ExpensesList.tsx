@@ -3,6 +3,7 @@ import { FlatList } from 'react-native';
 
 import { ExpenseItem } from './ExpenseItem';
 import { ExpenseObj } from '../../../store/types';
+import { Spacing } from '../../../ui/Spacing';
 
 type Props = { expenses: ExpenseObj[] };
 
@@ -14,6 +15,8 @@ export const ExpensesList: FC<Props> = ({ expenses }) => {
       renderItem={({ item }) => {
         return <ExpenseItem item={item} />;
       }}
+      // @ts-expect-error Invalid library type
+      ItemSeparatorComponent={<Spacing size={16} />}
     />
   );
 };
