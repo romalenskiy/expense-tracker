@@ -1,3 +1,6 @@
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import { FC, ReactNode, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
@@ -7,13 +10,9 @@ import { Spacing } from '../../../ui/Spacing';
 
 const dateFormatter = new Intl.DateTimeFormat('ru-RU');
 
-const parseDateString = (dateString: string): Date => {
-  return new Date(dateString.replace(/(\d{2})\.(\d{2})\.(\d{4})/, '$3-$2-$1'));
-};
-
 type Validation = {
   isValid: boolean;
-  fields: { amount: boolean; date: boolean; title: boolean };
+  fields: { amount: boolean; title: boolean };
   errorMessage?: string;
 };
 
@@ -37,7 +36,6 @@ export const ExpenseForm: FC<Props> = ({
   getActions,
 }) => {
   const amountInputRef = useRef<TextInput>(null);
-  const dateInputRef = useRef<TextInput>(null);
   const titleInputRef = useRef<TextInput>(null);
 
   const [isFormSubmited, setIsFormSubmited] = useState(false);
@@ -46,10 +44,9 @@ export const ExpenseForm: FC<Props> = ({
     value: String(initialAmount || ''),
     isTouched: false,
   });
-  const [dateValue, setDateValue] = useState(() => ({
-    value: dateFormatter.format(initialDate).replace(/\.|,|\/|-/g, '.'),
-    isTouched: false,
-  }));
+
+  const [datePickerValue, setDatePickerValue] = useState(initialDate);
+
   const [titleValue, setTitleValue] = useState({
     value: initialTitle,
     isTouched: false,
@@ -57,28 +54,22 @@ export const ExpenseForm: FC<Props> = ({
 
   const validation = useMemo<Validation>(() => {
     const amountValueNumber = parseFloat(amountValue.value);
-    const dateValueObj = parseDateString(dateValue.value);
     const titleValueTrim = titleValue.value.trim();
 
     const isAmountValid =
       !Number.isNaN(amountValueNumber) && amountValueNumber > 0;
-    const isDateValid =
-      dateValueObj.toString() !== 'Invalid Date' &&
-      dateValueObj.getTime() <= Date.now();
     const isTitleValid = titleValueTrim !== '';
 
     return {
-      isValid: isAmountValid && isDateValid && isTitleValid,
-      fields: { amount: isAmountValid, date: isDateValid, title: isTitleValid },
+      isValid: isAmountValid && isTitleValid,
+      fields: { amount: isAmountValid, title: isTitleValid },
       errorMessage: !isAmountValid
         ? 'Amount should be greater than 0'
-        : !isDateValid
-          ? "Date cant't be in fututre and should match pattern: DD.MM.YYYY"
-          : !isTitleValid
-            ? 'Title should be not empty'
-            : undefined,
+        : !isTitleValid
+          ? 'Title should be not empty'
+          : undefined,
     };
-  }, [amountValue.value, dateValue.value, titleValue.value]);
+  }, [amountValue.value, datePickerValue, titleValue.value]);
 
   const onAmountChange = (value: string) => {
     setAmountValue({
@@ -90,18 +81,15 @@ export const ExpenseForm: FC<Props> = ({
       isTouched: true,
     });
   };
-  const onDateChange = (value: string) => {
-    setDateValue({
-      value: value
-        .replaceAll(',', '.')
-        .replace(/\./g, (match: string, offset: number, text: string) =>
-          text.indexOf(match) === offset || text.lastIndexOf(match) === offset
-            ? match
-            : '',
-        ),
-      isTouched: true,
-    });
+
+  const onDatePickerChange = (event: DateTimePickerEvent, date?: Date) => {
+    if (event.type !== 'set' || !date || date.toString() === 'Invalid Date') {
+      return;
+    }
+
+    setDatePickerValue(date);
   };
+
   const onTitleChange = (value: string) => {
     setTitleValue({ value, isTouched: true });
   };
@@ -123,28 +111,26 @@ export const ExpenseForm: FC<Props> = ({
           onChangeText={onAmountChange}
           returnKeyType="done"
           getInputRef={amountInputRef}
-          onSubmitEditing={() => dateInputRef.current?.focus()}
-          blurOnSubmit={false}
-        />
-
-        <Input
-          style={styles.inputRow}
-          isInvalid={
-            (dateValue.isTouched || isFormSubmited) && !validation.fields.date
-          }
-          label="Date"
-          keyboardType="decimal-pad"
-          placeholder="DD.MM.YYYY"
-          maxLength={10}
-          value={dateValue.value}
-          onChangeText={onDateChange}
-          returnKeyType="done"
-          getInputRef={dateInputRef}
           onSubmitEditing={() => titleInputRef.current?.focus()}
           blurOnSubmit={false}
         />
-      </View>
 
+        <View>
+          <Input
+            style={styles.inputRow}
+            label="Date"
+            value={dateFormatter.format(datePickerValue)}
+            editable={false}
+          />
+
+          <DateTimePicker
+            value={datePickerValue}
+            onChange={onDatePickerChange}
+            style={styles.datePicker}
+            maximumDate={new Date()}
+          />
+        </View>
+      </View>
       <Input
         isInvalid={
           (titleValue.isTouched || isFormSubmited) && !validation.fields.title
@@ -160,7 +146,7 @@ export const ExpenseForm: FC<Props> = ({
 
       {getActions({
         amount: parseFloat(amountValue.value),
-        date: parseDateString(dateValue.value),
+        date: datePickerValue,
         title: titleValue.value.trim(),
         validation,
         onSubmit: () => setIsFormSubmited(true),
@@ -183,4 +169,13 @@ const styles = StyleSheet.create({
   inputRowContainer: { flexDirection: 'row', justifyContent: 'space-between' },
 
   inputRow: { flex: 1 },
+
+  datePicker: {
+    opacity: 0.05,
+    position: 'absolute',
+    left: 0,
+    top: 8,
+    height: '100%',
+    width: '100%',
+  },
 });
