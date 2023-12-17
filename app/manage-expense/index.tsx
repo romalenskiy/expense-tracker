@@ -1,27 +1,45 @@
 import { router } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
+import { ExpenseForm } from './_components/ExpenseForm';
 import { useStoreActions } from '../../store/storeActions';
 import { Button } from '../../ui/Button';
 
 export default function CreateExpense() {
   const { addExpense } = useStoreActions();
 
-  const onAdd = () => {
-    router.back();
-  };
-
   return (
     <View style={styles.container}>
-      <View style={styles.actions}>
-        <Button style={styles.button} onPress={onAdd}>
-          Add
-        </Button>
+      <ExpenseForm
+        getActions={({ amount, date, title, validation, onSubmit }) => {
+          return (
+            <View style={styles.actions}>
+              <Button
+                style={styles.button}
+                onPress={() => {
+                  onSubmit();
+                  if (!validation.isValid) {
+                    Alert.alert('Validation error', validation.errorMessage);
+                    return;
+                  }
+                  addExpense({ amount, date, title });
+                  router.back();
+                }}
+              >
+                Add
+              </Button>
 
-        <Button mode="flat" style={styles.button} onPress={() => router.back()}>
-          Cancel
-        </Button>
-      </View>
+              <Button
+                mode="flat"
+                style={styles.button}
+                onPress={() => router.back()}
+              >
+                Cancel
+              </Button>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 }

@@ -1,7 +1,10 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
 
+import { ExpenseForm } from './_components/ExpenseForm';
 import { Colors } from '../../constants/colors';
+import { useStore } from '../../store/store';
 import { useStoreActions } from '../../store/storeActions';
 import { Button } from '../../ui/Button';
 import { IconButton } from '../../ui/IconButton';
@@ -13,11 +16,21 @@ export type EditExpenseSearchParams = {
 export default function EditExpense() {
   const { id } = useLocalSearchParams<EditExpenseSearchParams>();
 
+  const {
+    store: { expenses },
+  } = useStore();
   const { deleteExpense, updateExpense } = useStoreActions();
 
-  const onUpdate = () => {
-    router.back();
-  };
+  const expensObj = useMemo(
+    () =>
+      expenses.find((item) => item.id === id) || {
+        id: '',
+        amount: 0,
+        date: new Date(),
+        title: '',
+      },
+    [expenses],
+  );
 
   const onDelete = () => {
     deleteExpense(id);
@@ -26,24 +39,50 @@ export default function EditExpense() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.actions}>
-        <Button style={styles.button} onPress={onUpdate}>
-          Update
-        </Button>
+      <ExpenseForm
+        initialAmount={expensObj.amount}
+        initialDate={expensObj.date}
+        initialTitle={expensObj.title}
+        getActions={({ amount, date, title, validation, onSubmit }) => {
+          return (
+            <>
+              <View style={styles.actions}>
+                <Button
+                  style={styles.button}
+                  onPress={() => {
+                    onSubmit();
+                    if (!validation.isValid) {
+                      Alert.alert('Validation error', validation.errorMessage);
+                      return;
+                    }
+                    updateExpense(id, { amount, date, title });
+                    router.back();
+                  }}
+                >
+                  Update
+                </Button>
 
-        <Button mode="flat" style={styles.button} onPress={() => router.back()}>
-          Cancel
-        </Button>
-      </View>
+                <Button
+                  mode="flat"
+                  style={styles.button}
+                  onPress={() => router.back()}
+                >
+                  Cancel
+                </Button>
+              </View>
 
-      <View style={styles.innerContainer}>
-        <IconButton
-          iconName="trash"
-          color={Colors.error500}
-          size={36}
-          onPress={onDelete}
-        />
-      </View>
+              <View style={styles.innerContainer}>
+                <IconButton
+                  iconName="trash"
+                  color={Colors.error500}
+                  size={36}
+                  onPress={onDelete}
+                />
+              </View>
+            </>
+          );
+        }}
+      />
     </View>
   );
 }
