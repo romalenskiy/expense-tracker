@@ -1,6 +1,7 @@
 export type ExpenseObj = {
   id: string;
   title: string;
-  date: Date;
+  // timestamp
+  date: number;
   amount: number;
 };

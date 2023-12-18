@@ -13,11 +13,11 @@ export default function RecentExpenses() {
     const dateWeekAgoDayStart = new Date(dateWeekAgo).setHours(0, 0, 0, 0);
 
     const filteredExpenses = expenses.filter((item) => {
-      return item.date.getTime() >= dateWeekAgoDayStart;
+      return item.date >= dateWeekAgoDayStart;
     });
 
     const sortedExpenses = filteredExpenses.sort((aExpense, bExpense) => {
-      return bExpense.date.getTime() - aExpense.date.getTime();
+      return bExpense.date - aExpense.date;
     });
 
     return sortedExpenses;

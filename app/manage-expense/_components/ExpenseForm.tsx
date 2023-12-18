@@ -18,11 +18,11 @@ type Validation = {
 
 type Props = {
   initialAmount?: number;
-  initialDate?: Date;
+  initialDate?: number;
   initialTitle?: string;
   getActions: (params: {
     amount: number;
-    date: Date;
+    date: number;
     title: string;
     validation: Validation;
     onSubmit: VoidFunction;
@@ -31,7 +31,7 @@ type Props = {
 
 export const ExpenseForm: FC<Props> = ({
   initialAmount = 0,
-  initialDate = new Date(),
+  initialDate = new Date().getTime(),
   initialTitle = '',
   getActions,
 }) => {
@@ -45,7 +45,9 @@ export const ExpenseForm: FC<Props> = ({
     isTouched: false,
   });
 
-  const [datePickerValue, setDatePickerValue] = useState(initialDate);
+  const [datePickerValue, setDatePickerValue] = useState(
+    () => new Date(initialDate),
+  );
 
   const [titleValue, setTitleValue] = useState({
     value: initialTitle,
@@ -146,7 +148,7 @@ export const ExpenseForm: FC<Props> = ({
 
       {getActions({
         amount: parseFloat(amountValue.value),
-        date: datePickerValue,
+        date: datePickerValue.getTime(),
         title: titleValue.value.trim(),
         validation,
         onSubmit: () => setIsFormSubmited(true),

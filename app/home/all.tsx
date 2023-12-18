@@ -10,7 +10,7 @@ export default function AllExpenses() {
 
   const sortedExpenses = useMemo(() => {
     return expenses.sort((aExpense, bExpense) => {
-      return bExpense.date.getTime() - aExpense.date.getTime();
+      return bExpense.date - aExpense.date;
     });
   }, [expenses]);
 
