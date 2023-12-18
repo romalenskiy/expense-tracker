@@ -3,9 +3,13 @@ import { useMemo } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { ExpenseForm } from './_components/ExpenseForm';
+import {
+  useDeleteExpense,
+  useExpenses,
+  useUpdateExpense,
+} from '../../api/queries';
+import { ExpenseObj } from '../../api/types';
 import { Colors } from '../../constants/colors';
-import { useStore } from '../../store/store';
-import { useStoreActions } from '../../store/storeActions';
 import { Button } from '../../ui/Button';
 import { IconButton } from '../../ui/IconButton';
 
@@ -16,24 +20,28 @@ export type EditExpenseSearchParams = {
 export default function EditExpense() {
   const { id } = useLocalSearchParams<EditExpenseSearchParams>();
 
-  const {
-    store: { expenses },
-  } = useStore();
-  const { deleteExpense, updateExpense } = useStoreActions();
+  const { isError, isPending, data: expenses } = useExpenses();
 
-  const expensObj = useMemo(
-    () =>
-      expenses.find((item) => item.id === id) || {
-        id: '',
-        amount: 0,
-        date: new Date(),
-        title: '',
-      },
-    [expenses],
-  );
+  const updateMutation = useUpdateExpense();
+  const deleteMutation = useDeleteExpense();
+
+  const expensObj: ExpenseObj = useMemo(() => {
+    const placeholder = {
+      id: '',
+      amount: 0,
+      date: Date.now(),
+      title: '',
+    };
+
+    if (isPending || isError) {
+      return placeholder;
+    }
+
+    return expenses.find((item) => item.id === id) || placeholder;
+  }, [expenses, isPending, isError]);
 
   const onDelete = () => {
-    deleteExpense(id);
+    deleteMutation.mutate({ id });
     router.back();
   };
 
@@ -55,7 +63,7 @@ export default function EditExpense() {
                       Alert.alert('Validation error', validation.errorMessage);
                       return;
                     }
-                    updateExpense(id, { amount, date, title });
+                    updateMutation.mutate({ id, amount, date, title });
                     router.back();
                   }}
                 >

@@ -4,9 +4,10 @@ import { FC, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { BaseButton, Swipeable } from 'react-native-gesture-handler';
 
+import { useDeleteExpense } from '../../../api/queries';
+import { ExpenseObj } from '../../../api/types';
 import { Colors } from '../../../constants/colors';
-import { useStoreActions } from '../../../store/storeActions';
-import { ExpenseObj } from '../../../store/types';
+import { Spacing } from '../../../ui/Spacing';
 
 const renderActions = (
   direction: 'left' | 'right',
@@ -43,59 +44,63 @@ const getRenderActions =
 
 const dateFormatter = new Intl.DateTimeFormat();
 
-type Props = { item: ExpenseObj };
+type Props = { item: ExpenseObj; isLastItem?: boolean };
 
-export const ExpenseItem: FC<Props> = ({ item }) => {
-  const { deleteExpense } = useStoreActions();
+export const ExpenseItem: FC<Props> = ({ item, isLastItem }) => {
+  const deleteMutation = useDeleteExpense();
 
   const [isPressed, setIsPressed] = useState(false);
   const [swipeActiveDirection, setSwipeActiveDirection] = useState<
     'left' | 'right' | undefined
   >();
 
-  const onDeleteClick = () => deleteExpense(item.id);
+  const onDeleteClick = () => deleteMutation.mutate({ id: item.id });
 
   return (
-    <Swipeable
-      renderLeftActions={getRenderActions('left', onDeleteClick)}
-      renderRightActions={getRenderActions('right', onDeleteClick)}
-      onSwipeableWillOpen={setSwipeActiveDirection}
-      onSwipeableWillClose={() => setSwipeActiveDirection(undefined)}
-      friction={2}
-      overshootFriction={2}
-    >
-      <View
-        style={[
-          styles.container,
-          isPressed && styles.pressed,
-          swipeActiveDirection === 'left' && {
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-          },
-          swipeActiveDirection === 'right' && {
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
-          },
-        ]}
+    <>
+      <Swipeable
+        renderLeftActions={getRenderActions('left', onDeleteClick)}
+        renderRightActions={getRenderActions('right', onDeleteClick)}
+        onSwipeableWillOpen={setSwipeActiveDirection}
+        onSwipeableWillClose={() => setSwipeActiveDirection(undefined)}
+        friction={2}
+        overshootFriction={2}
       >
-        <BaseButton
-          style={styles.buttonContainer}
-          onActiveStateChange={setIsPressed}
-          onPress={() => router.push(`/manage-expense/${item.id}`)}
+        <View
+          style={[
+            styles.container,
+            isPressed && styles.pressed,
+            swipeActiveDirection === 'left' && {
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+            },
+            swipeActiveDirection === 'right' && {
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+            },
+          ]}
         >
-          <View>
-            <Text style={[styles.textBase, styles.title]}>{item.title}</Text>
-            <Text style={styles.textBase}>
-              {dateFormatter.format(item.date)}
-            </Text>
-          </View>
+          <BaseButton
+            style={styles.buttonContainer}
+            onActiveStateChange={setIsPressed}
+            onPress={() => router.push(`/manage-expense/${item.id}`)}
+          >
+            <View>
+              <Text style={[styles.textBase, styles.title]}>{item.title}</Text>
+              <Text style={styles.textBase}>
+                {dateFormatter.format(item.date)}
+              </Text>
+            </View>
 
-          <View style={styles.amountContainer}>
-            <Text style={styles.amount}>${item.amount.toFixed(2)}</Text>
-          </View>
-        </BaseButton>
-      </View>
-    </Swipeable>
+            <View style={styles.amountContainer}>
+              <Text style={styles.amount}>${item.amount.toFixed(2)}</Text>
+            </View>
+          </BaseButton>
+        </View>
+      </Swipeable>
+
+      {isLastItem && <Spacing size={16} />}
+    </>
   );
 };
 

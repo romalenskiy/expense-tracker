@@ -3,15 +3,15 @@ import 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
+import { ReactQueryProvider } from '../api/queries';
 import { Colors } from '../constants/colors';
-import { StoreContextProvider } from '../store/store';
 
 export default function RootLayout() {
   return (
     <>
       <StatusBar style="light" />
 
-      <StoreContextProvider>
+      <ReactQueryProvider>
         <Stack
           screenOptions={{
             headerBackTitle: 'Back',
@@ -34,7 +34,7 @@ export default function RootLayout() {
             options={{ presentation: 'modal', title: 'Edit Expense' }}
           />
         </Stack>
-      </StoreContextProvider>
+      </ReactQueryProvider>
     </>
   );
 }

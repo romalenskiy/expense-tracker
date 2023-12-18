@@ -1,14 +1,16 @@
 import { useMemo } from 'react';
 
 import { ExpensesMain } from './_components/ExpensesMain';
-import { useStore } from '../../store/store';
+import { useExpenses } from '../../api/queries';
 
 export default function RecentExpenses() {
-  const {
-    store: { expenses },
-  } = useStore();
+  const { isPending, isError, data: expenses } = useExpenses();
 
   const recentExpenses = useMemo(() => {
+    if (isPending || isError) {
+      return [];
+    }
+
     const dateWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
     const dateWeekAgoDayStart = new Date(dateWeekAgo).setHours(0, 0, 0, 0);
 
@@ -21,13 +23,15 @@ export default function RecentExpenses() {
     });
 
     return sortedExpenses;
-  }, [expenses]);
+  }, [expenses, isPending, isError]);
 
   return (
     <ExpensesMain
       periodName="Last 7 days"
       expenses={recentExpenses}
-      placeholderText="No expenses found for the last 7 days"
+      placeholderText={
+        isPending ? 'Loadig...' : 'No expenses found for the last 7 days'
+      }
     />
   );
 }

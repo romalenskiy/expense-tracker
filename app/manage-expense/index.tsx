@@ -2,11 +2,11 @@ import { router } from 'expo-router';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { ExpenseForm } from './_components/ExpenseForm';
-import { useStoreActions } from '../../store/storeActions';
+import { useAddExpense } from '../../api/queries';
 import { Button } from '../../ui/Button';
 
 export default function CreateExpense() {
-  const { addExpense } = useStoreActions();
+  const mutation = useAddExpense();
 
   return (
     <View style={styles.container}>
@@ -22,7 +22,9 @@ export default function CreateExpense() {
                     Alert.alert('Validation error', validation.errorMessage);
                     return;
                   }
-                  addExpense({ amount, date, title });
+
+                  mutation.mutate({ amount, date, title });
+
                   router.back();
                 }}
               >

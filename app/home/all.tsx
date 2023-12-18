@@ -1,18 +1,20 @@
 import { useMemo } from 'react';
 
 import { ExpensesMain } from './_components/ExpensesMain';
-import { useStore } from '../../store/store';
+import { useExpenses } from '../../api/queries';
 
 export default function AllExpenses() {
-  const {
-    store: { expenses },
-  } = useStore();
+  const { isPending, isError, data: expenses } = useExpenses();
 
   const sortedExpenses = useMemo(() => {
+    if (isPending || isError) {
+      return [];
+    }
+
     return expenses.sort((aExpense, bExpense) => {
       return bExpense.date - aExpense.date;
     });
-  }, [expenses]);
+  }, [expenses, isPending, isError]);
 
   return (
     <ExpensesMain
