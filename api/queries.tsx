@@ -10,7 +10,7 @@ import { FirebaseApi } from './api';
 import { ExpenseObj } from './types';
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } },
+  defaultOptions: { queries: { staleTime: 5 * 60 * 1000, retry: 1 } },
 });
 
 type Props = { children: ReactNode };

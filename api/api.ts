@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { ExpenseObj } from './types';
 
@@ -25,24 +25,35 @@ class API {
       console.log(
         `Request start: ${config.method?.toUpperCase()} "${config.url}" ${
           config.data ? JSON.stringify(config.data) : '{}'
-        }`,
+        }\n-----------------------------------------------------`,
       );
-      console.log('--------------------------------------');
 
       return config;
     });
 
-    this.request.interceptors.response.use((response) => {
-      const { config, data } = response;
-      console.log(
-        `Request end: ${config.method?.toUpperCase()} "${config.url}" ${
-          data ? JSON.stringify(data) : '{}'
-        }`,
-      );
-      console.log('--------------------------------------');
+    this.request.interceptors.response.use(
+      (response) => {
+        const { config, data } = response;
+        console.log('adsads');
+        console.log(
+          `Request end: ${config.method?.toUpperCase()} "${config.url}" ${
+            data ? JSON.stringify(data) : '{}'
+          }\n-----------------------------------------------------`,
+        );
 
-      return response;
-    });
+        return response;
+      },
+      (error) => {
+        if (error instanceof AxiosError) {
+          console.error(
+            `Request error: ${error.config?.method?.toUpperCase()} "${error
+              .config?.url}" ${
+              error.message
+            }\n-----------------------------------------------------`,
+          );
+        }
+      },
+    );
   }
 
   public async getExpenses({
