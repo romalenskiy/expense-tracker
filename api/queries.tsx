@@ -1,3 +1,5 @@
+import { FirebaseApi } from '@api/api';
+import { ExpenseObj } from '@api/types';
 import {
   QueryClient,
   QueryClientProvider,
@@ -5,9 +7,6 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import { FC, ReactNode } from 'react';
-
-import { FirebaseApi } from './api';
-import { ExpenseObj } from './types';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000, retry: 1 } },

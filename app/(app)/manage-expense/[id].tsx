@@ -1,17 +1,13 @@
+import { useDeleteExpense, useExpenses, useUpdateExpense } from '@api/queries';
+import { ExpenseObj } from '@api/types';
+import { Colors } from '@ui/constants/colors';
+import { Button } from '@ui/Button';
+import { IconButton } from '@ui/IconButton';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { ExpenseForm } from './_components/ExpenseForm';
-import {
-  useDeleteExpense,
-  useExpenses,
-  useUpdateExpense,
-} from '../../../api/queries';
-import { ExpenseObj } from '../../../api/types';
-import { Colors } from '../../../constants/colors';
-import { Button } from '../../../ui/Button';
-import { IconButton } from '../../../ui/IconButton';
 
 export type EditExpenseSearchParams = {
   id: string;

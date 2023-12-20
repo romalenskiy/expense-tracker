@@ -1,3 +1,4 @@
+import { Colors } from '@ui/constants/colors';
 import { FC, Ref } from 'react';
 import {
   StyleProp,
@@ -9,8 +10,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-
-import { Colors } from '../constants/colors';
 
 type Props = Omit<TextInputProps, 'style'> & {
   label: string;

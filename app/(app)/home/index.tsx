@@ -1,10 +1,10 @@
+import { useExpenses } from '@api/queries';
+import { ErrorOverlay } from '@ui/ErrorOverlay';
+import { LoadingOverlay } from '@ui/LoadingOverlay';
 import { AxiosError } from 'axios';
 import { useMemo } from 'react';
 
 import { ExpensesMain } from './_components/ExpensesMain';
-import { useExpenses } from '../../../api/queries';
-import { ErrorOverlay } from '../../../ui/ErrorOverlay';
-import { LoadingOverlay } from '../../../ui/LoadingOverlay';
 
 export default function RecentExpensesScreen() {
   const { isPending, isError, error, data: expenses, refetch } = useExpenses();

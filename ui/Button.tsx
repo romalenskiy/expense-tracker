@@ -1,3 +1,4 @@
+import { Colors } from '@ui/constants/colors';
 import { FC, ReactNode } from 'react';
 import {
   Pressable,
@@ -8,8 +9,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-
-import { Colors } from '../constants/colors';
 
 type Props = {
   style?: StyleProp<ViewStyle>;

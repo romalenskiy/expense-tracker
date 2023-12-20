@@ -1,10 +1,10 @@
+import { Colors } from '@ui/constants/colors';
+import { Button } from '@ui/Button';
 import React, { FC, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { AuthForm } from './AuthForm';
 import { Credentials, CredentialsInvalid } from './types';
-import { Colors } from '../../../constants/colors';
-import { Button } from '../../../ui/Button';
 
 type Props = { isLogin?: boolean };
 

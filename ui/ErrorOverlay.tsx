@@ -1,8 +1,7 @@
+import { Colors } from '@ui/constants/colors';
+import { Button } from '@ui/Button';
 import { FC, ReactNode } from 'react';
 import { PressableProps, StyleSheet, Text, View } from 'react-native';
-
-import { Button } from './Button';
-import { Colors } from '../constants/colors';
 
 type Props = {
   message?: ReactNode;

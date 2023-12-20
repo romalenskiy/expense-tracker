@@ -1,13 +1,12 @@
+import { useDeleteExpense } from '@api/queries';
+import { ExpenseObj } from '@api/types';
+import { Colors } from '@ui/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { Spacing } from '@ui/Spacing';
 import { router } from 'expo-router';
 import { FC, useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { BaseButton, Swipeable } from 'react-native-gesture-handler';
-
-import { useDeleteExpense } from '../../../../api/queries';
-import { ExpenseObj } from '../../../../api/types';
-import { Colors } from '../../../../constants/colors';
-import { Spacing } from '../../../../ui/Spacing';
 
 const dateFormatter = new Intl.DateTimeFormat();
 

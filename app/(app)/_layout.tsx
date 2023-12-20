@@ -1,10 +1,9 @@
 import 'react-native-gesture-handler';
 
+import { ReactQueryProvider } from '@api/queries';
+import { Colors } from '@ui/constants/colors';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-
-import { ReactQueryProvider } from '../../api/queries';
-import { Colors } from '../../constants/colors';
 
 export default function AppLayout() {
   return (

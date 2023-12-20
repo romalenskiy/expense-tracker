@@ -1,8 +1,7 @@
+import { ExpenseObj } from '@api/types';
+import { Colors } from '@ui/constants/colors';
 import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
-import { ExpenseObj } from '../../../../api/types';
-import { Colors } from '../../../../constants/colors';
 
 type Props = { periodName: string; expenses: ExpenseObj[] };
 

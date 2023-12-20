@@ -1,11 +1,11 @@
+import { ExpenseObj } from '@api/types';
+import { Colors } from '@ui/constants/colors';
+import { Spacing } from '@ui/Spacing';
 import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ExpensesList } from './ExpensesList';
 import { ExpensesSummary } from './ExpensesSummary';
-import { ExpenseObj } from '../../../../api/types';
-import { Colors } from '../../../../constants/colors';
-import { Spacing } from '../../../../ui/Spacing';
 
 type Props = {
   expenses: ExpenseObj[];

@@ -1,7 +1,6 @@
+import { Colors } from '@ui/constants/colors';
 import { FC } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-
-import { Colors } from '../constants/colors';
 
 export const LoadingOverlay: FC = () => {
   return (

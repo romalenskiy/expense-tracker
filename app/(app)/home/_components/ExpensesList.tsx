@@ -1,9 +1,9 @@
+import { ExpenseObj } from '@api/types';
+import { Spacing } from '@ui/Spacing';
 import { FC } from 'react';
 import { FlatList } from 'react-native';
 
 import { ExpenseItem } from './ExpenseItem';
-import { ExpenseObj } from '../../../../api/types';
-import { Spacing } from '../../../../ui/Spacing';
 
 type Props = { expenses: ExpenseObj[] };
 

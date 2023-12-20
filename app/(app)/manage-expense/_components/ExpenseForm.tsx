@@ -1,12 +1,11 @@
+import { Colors } from '@ui/constants/colors';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
+import { Input } from '@ui/Input';
+import { Spacing } from '@ui/Spacing';
 import { FC, ReactNode, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-
-import { Colors } from '../../../../constants/colors';
-import { Input } from '../../../../ui/Input';
-import { Spacing } from '../../../../ui/Spacing';
 
 const dateFormatter = new Intl.DateTimeFormat('ru-RU');
 
