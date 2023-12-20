@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { BaseButton, Swipeable } from 'react-native-gesture-handler';
 
@@ -8,39 +8,6 @@ import { useDeleteExpense } from '../../../api/queries';
 import { ExpenseObj } from '../../../api/types';
 import { Colors } from '../../../constants/colors';
 import { Spacing } from '../../../ui/Spacing';
-
-const renderActions = (
-  direction: 'left' | 'right',
-  onDeleteClick: VoidFunction,
-) => {
-  return (
-    <View
-      style={[
-        styles.swipeActionsContainer,
-        direction === 'left'
-          ? {
-              borderTopRightRadius: 0,
-              borderBottomRightRadius: 0,
-            }
-          : { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
-      ]}
-    >
-      <BaseButton style={styles.swipeButton} onPress={onDeleteClick}>
-        <Text
-          style={{
-            color: Colors.text_primary,
-          }}
-        >
-          <Ionicons name="trash" size={24} />
-        </Text>
-      </BaseButton>
-    </View>
-  );
-};
-
-const getRenderActions =
-  (direction: 'left' | 'right', onDeleteClick: VoidFunction) => () =>
-    renderActions(direction, onDeleteClick);
 
 const dateFormatter = new Intl.DateTimeFormat();
 
@@ -50,36 +17,32 @@ export const ExpenseItem: FC<Props> = ({ item, isLastItem }) => {
   const deleteMutation = useDeleteExpense();
 
   const [isPressed, setIsPressed] = useState(false);
-  const [swipeActiveDirection, setSwipeActiveDirection] = useState<
-    'left' | 'right' | undefined
-  >();
 
-  const onDeleteClick = () => deleteMutation.mutate({ id: item.id });
+  const renderActions = useCallback(() => {
+    return (
+      <View style={styles.swipeActionsContainer}>
+        <BaseButton
+          style={styles.swipeButton}
+          onPress={() => deleteMutation.mutate({ id: item.id })}
+        >
+          <Text style={styles.swipeActionText}>
+            <Ionicons name="trash" size={24} />
+          </Text>
+        </BaseButton>
+      </View>
+    );
+  }, [deleteMutation.mutate]);
 
   return (
     <>
       <Swipeable
-        renderLeftActions={getRenderActions('left', onDeleteClick)}
-        renderRightActions={getRenderActions('right', onDeleteClick)}
-        onSwipeableWillOpen={setSwipeActiveDirection}
-        onSwipeableWillClose={() => setSwipeActiveDirection(undefined)}
+        renderLeftActions={renderActions}
+        renderRightActions={renderActions}
         friction={2}
         overshootFriction={2}
+        containerStyle={styles.swipeableContainer}
       >
-        <View
-          style={[
-            styles.container,
-            isPressed && styles.pressed,
-            swipeActiveDirection === 'left' && {
-              borderTopLeftRadius: 0,
-              borderBottomLeftRadius: 0,
-            },
-            swipeActiveDirection === 'right' && {
-              borderTopRightRadius: 0,
-              borderBottomRightRadius: 0,
-            },
-          ]}
-        >
+        <View style={[styles.container, isPressed && styles.pressed]}>
           <BaseButton
             style={styles.buttonContainer}
             onActiveStateChange={setIsPressed}
@@ -109,8 +72,9 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 
+  swipeableContainer: { borderRadius: 6 },
+
   container: {
-    borderRadius: 6,
     elevation: 3,
     shadowColor: Colors.gray500,
     shadowRadius: 4,
@@ -125,7 +89,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 
-  swipeActionsContainer: { width: 64, overflow: 'hidden', borderRadius: 6 },
+  swipeActionsContainer: { width: 64 },
+
+  swipeActionText: { color: Colors.text_primary },
 
   swipeButton: {
     flex: 1,
