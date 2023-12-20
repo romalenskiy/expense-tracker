@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { Colors } from '../../../constants/colors';
+import { Colors } from '../../../../constants/colors';
 
 type Props = Omit<TextInputProps, 'style'> & {
   label: string;

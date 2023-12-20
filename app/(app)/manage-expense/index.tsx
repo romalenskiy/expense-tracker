@@ -2,10 +2,10 @@ import { router } from 'expo-router';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { ExpenseForm } from './_components/ExpenseForm';
-import { useAddExpense } from '../../api/queries';
-import { Button } from '../../ui/Button';
+import { useAddExpense } from '../../../api/queries';
+import { Button } from '../../../ui/Button';
 
-export default function CreateExpense() {
+export default function CreateExpenseScreen() {
   const mutation = useAddExpense();
 
   return (

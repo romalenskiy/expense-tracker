@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs, router } from 'expo-router';
 
-import { Colors } from '../../constants/colors';
-import { IconButton } from '../../ui/IconButton';
+import { Colors } from '../../../constants/colors';
+import { IconButton } from '../../../ui/IconButton';
 
 export default function HomeLayout() {
   return (

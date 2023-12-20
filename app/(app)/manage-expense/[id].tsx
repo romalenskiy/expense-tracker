@@ -7,17 +7,17 @@ import {
   useDeleteExpense,
   useExpenses,
   useUpdateExpense,
-} from '../../api/queries';
-import { ExpenseObj } from '../../api/types';
-import { Colors } from '../../constants/colors';
-import { Button } from '../../ui/Button';
-import { IconButton } from '../../ui/IconButton';
+} from '../../../api/queries';
+import { ExpenseObj } from '../../../api/types';
+import { Colors } from '../../../constants/colors';
+import { Button } from '../../../ui/Button';
+import { IconButton } from '../../../ui/IconButton';
 
 export type EditExpenseSearchParams = {
   id: string;
 };
 
-export default function EditExpense() {
+export default function EditExpenseScreen() {
   const { id } = useLocalSearchParams<EditExpenseSearchParams>();
 
   const { isError, isPending, data: expenses } = useExpenses();
