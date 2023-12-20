@@ -1,4 +1,4 @@
-import { useAddExpense } from '@api/queries';
+import { useAddExpense } from '@api/expenses/queries';
 import { Button } from '@ui/Button';
 import { router } from 'expo-router';
 import { Alert, StyleSheet, View } from 'react-native';

@@ -1,4 +1,4 @@
-import { useExpenses } from '@api/queries';
+import { useExpenses } from '@api/expenses/queries';
 import { ErrorOverlay } from '@ui/ErrorOverlay';
 import { LoadingOverlay } from '@ui/LoadingOverlay';
 import { AxiosError } from 'axios';

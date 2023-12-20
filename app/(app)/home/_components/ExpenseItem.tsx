@@ -1,8 +1,8 @@
-import { useDeleteExpense } from '@api/queries';
-import { ExpenseObj } from '@api/types';
-import { Colors } from '@ui/constants/colors';
+import { useDeleteExpense } from '@api/expenses/queries';
+import { ExpenseObj } from '@api/expenses/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Spacing } from '@ui/Spacing';
+import { Colors } from '@ui/constants/colors';
 import { router } from 'expo-router';
 import { FC, useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';

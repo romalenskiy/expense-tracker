@@ -1,4 +1,4 @@
-import { ExpenseObj } from '@api/types';
+import { ExpenseObj } from '@api/expenses/types';
 import { Spacing } from '@ui/Spacing';
 import { FC } from 'react';
 import { FlatList } from 'react-native';

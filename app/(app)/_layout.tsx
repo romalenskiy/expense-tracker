@@ -1,39 +1,29 @@
-import 'react-native-gesture-handler';
-
-import { ReactQueryProvider } from '@api/queries';
 import { Colors } from '@ui/constants/colors';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 
 export default function AppLayout() {
   return (
-    <>
-      <StatusBar style="light" />
+    <Stack
+      screenOptions={{
+        headerBackTitle: 'Back',
+        headerStyle: { backgroundColor: Colors.primary500 },
+        headerTintColor: Colors.text_primary,
+        contentStyle: {
+          backgroundColor: Colors.primary800,
+        },
+      }}
+    >
+      <Stack.Screen name="home" options={{ headerShown: false }} />
 
-      <ReactQueryProvider>
-        <Stack
-          screenOptions={{
-            headerBackTitle: 'Back',
-            headerStyle: { backgroundColor: Colors.primary500 },
-            headerTintColor: Colors.text_primary,
-            contentStyle: {
-              backgroundColor: Colors.primary800,
-            },
-          }}
-        >
-          <Stack.Screen name="home" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="manage-expense/index"
+        options={{ presentation: 'modal', title: 'Add Expense' }}
+      />
 
-          <Stack.Screen
-            name="manage-expense/index"
-            options={{ presentation: 'modal', title: 'Add Expense' }}
-          />
-
-          <Stack.Screen
-            name="manage-expense/[id]"
-            options={{ presentation: 'modal', title: 'Edit Expense' }}
-          />
-        </Stack>
-      </ReactQueryProvider>
-    </>
+      <Stack.Screen
+        name="manage-expense/[id]"
+        options={{ presentation: 'modal', title: 'Edit Expense' }}
+      />
+    </Stack>
   );
 }

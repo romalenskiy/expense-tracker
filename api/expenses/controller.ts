@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import { BaseController } from '@api/baseController';
 
 import { ExpenseObj } from './types';
 
@@ -14,46 +14,15 @@ type UpdateExpenseResponse = Omit<ExpenseObj, 'id'>;
 type DeleteExpenseParams = { id: string };
 type DeleteExpenseResponse = { id: string };
 
-class API {
-  private readonly baseUrl =
-    'https://expense-tracker-35fe9-default-rtdb.europe-west1.firebasedatabase.app';
-
-  private readonly request = axios.create({ baseURL: this.baseUrl });
+export class ExpensesController extends BaseController {
+  protected static self?: ExpensesController;
+  public static get: () => ExpensesController;
 
   constructor() {
-    this.request.interceptors.request.use((config) => {
-      console.log(
-        `Request start: ${config.method?.toUpperCase()} "${config.url}" ${
-          config.data ? JSON.stringify(config.data) : '{}'
-        }\n-----------------------------------------------------`,
-      );
-
-      return config;
+    super({
+      baseURL:
+        'https://expense-tracker-35fe9-default-rtdb.europe-west1.firebasedatabase.app',
     });
-
-    this.request.interceptors.response.use(
-      (response) => {
-        const { config, data } = response;
-        console.log('adsads');
-        console.log(
-          `Request end: ${config.method?.toUpperCase()} "${config.url}" ${
-            data ? JSON.stringify(data) : '{}'
-          }\n-----------------------------------------------------`,
-        );
-
-        return response;
-      },
-      (error) => {
-        if (error instanceof AxiosError) {
-          console.error(
-            `Request error: ${error.config?.method?.toUpperCase()} "${error
-              .config?.url}" ${
-              error.message
-            }\n-----------------------------------------------------`,
-          );
-        }
-      },
-    );
   }
 
   public async getExpenses({
@@ -98,5 +67,3 @@ class API {
     return data;
   }
 }
-
-export const FirebaseApi = new API();

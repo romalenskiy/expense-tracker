@@ -1,8 +1,12 @@
-import { useDeleteExpense, useExpenses, useUpdateExpense } from '@api/queries';
-import { ExpenseObj } from '@api/types';
-import { Colors } from '@ui/constants/colors';
+import {
+  useDeleteExpense,
+  useExpenses,
+  useUpdateExpense,
+} from '@api/expenses/queries';
+import { ExpenseObj } from '@api/expenses/types';
 import { Button } from '@ui/Button';
 import { IconButton } from '@ui/IconButton';
+import { Colors } from '@ui/constants/colors';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';

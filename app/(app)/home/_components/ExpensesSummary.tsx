@@ -1,4 +1,4 @@
-import { ExpenseObj } from '@api/types';
+import { ExpenseObj } from '@api/expenses/types';
 import { Colors } from '@ui/constants/colors';
 import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
