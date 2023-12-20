@@ -1,5 +1,5 @@
-import { Text } from 'react-native';
+import { AuthMain } from './_components/AuthMain';
 
 export default function SignupScreen() {
-  return <Text>Signup Screen</Text>;
+  return <AuthMain />;
 }
