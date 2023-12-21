@@ -1,10 +1,13 @@
 import { Colors } from '@ui/constants/colors';
 import { FC } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
-export const LoadingOverlay: FC = () => {
+type Props = { message?: string };
+
+export const LoadingOverlay: FC<Props> = ({ message }) => {
   return (
     <View style={styles.container}>
+      {!!message && <Text style={styles.message}>{message}</Text>}
       <ActivityIndicator size="large" color={Colors.white} />
     </View>
   );
@@ -15,7 +18,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    padding: 32,
     backgroundColor: Colors.primary700,
+  },
+
+  message: {
+    fontSize: 16,
+    marginBottom: 12,
   },
 });

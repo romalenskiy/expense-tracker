@@ -60,6 +60,7 @@ export const AuthForm: FC<Props> = ({
           value={enteredEmail}
           keyboardType="email-address"
           autoComplete="email"
+          autoCapitalize="none"
           isInvalid={emailIsInvalid}
         />
 

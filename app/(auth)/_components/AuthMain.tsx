@@ -1,14 +1,18 @@
-import { Colors } from '@ui/constants/colors';
 import { Button } from '@ui/Button';
+import { Colors } from '@ui/constants/colors';
+import { router } from 'expo-router';
 import React, { FC, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { AuthForm } from './AuthForm';
 import { Credentials, CredentialsInvalid } from './types';
 
-type Props = { isLogin?: boolean };
+type Props = {
+  isLogin?: boolean;
+  onSubmit: (params: { email: string; password: string }) => void;
+};
 
-export const AuthMain: FC<Props> = ({ isLogin }) => {
+export const AuthMain: FC<Props> = ({ isLogin, onSubmit }) => {
   const [credentialsInvalid, setCredentialsInvalid] =
     useState<CredentialsInvalid>({
       email: false,
@@ -17,7 +21,11 @@ export const AuthMain: FC<Props> = ({ isLogin }) => {
     });
 
   const switchAuthModeHandler = () => {
-    // Todo
+    if (isLogin) {
+      router.replace('/signup');
+    } else {
+      router.replace('/login');
+    }
   };
 
   const submitHandler = (credentials: Credentials) => {
@@ -31,15 +39,20 @@ export const AuthMain: FC<Props> = ({ isLogin }) => {
     const passwordsAreEqual = password === confirmPassword;
 
     if (!emailIsValid || !passwordIsValid || (!isLogin && !passwordsAreEqual)) {
-      Alert.alert('Invalid input', 'Please check your entered credentials.');
+      Alert.alert(
+        'Invalid input',
+        'Please check your entered credentials. Password must be > 6 symbols',
+      );
       setCredentialsInvalid({
         email: !emailIsValid,
         password: !passwordIsValid,
         confirmPassword: !passwordIsValid || !passwordsAreEqual,
       });
+
+      return;
     }
-    // Todo
-    // onAuthenticate({ email, password });
+
+    onSubmit({ email, password });
   };
 
   return (

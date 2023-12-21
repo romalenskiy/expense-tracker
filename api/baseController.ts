@@ -60,8 +60,10 @@ export class BaseController {
           error.message
         }\n-----------------------------------------------------`,
       );
+    } else {
+      console.error('Internal response error', error);
     }
 
-    return error;
+    return Promise.reject(error);
   };
 }

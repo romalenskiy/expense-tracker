@@ -1,5 +1,5 @@
-import { Colors } from '@ui/constants/colors';
 import { Button } from '@ui/Button';
+import { Colors } from '@ui/constants/colors';
 import { FC, ReactNode } from 'react';
 import { PressableProps, StyleSheet, Text, View } from 'react-native';
 
