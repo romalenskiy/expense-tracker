@@ -1,4 +1,5 @@
 import { BaseController } from '@api/baseController';
+import { SessionStorage } from '@store/sessionStorage';
 
 import { ExpenseObj } from './types';
 
@@ -23,15 +24,34 @@ export class ExpensesController extends BaseController {
       baseURL:
         'https://expense-tracker-35fe9-default-rtdb.europe-west1.firebasedatabase.app',
     });
+
+    this.request.interceptors.request.use(async (config) => {
+      const session = await SessionStorage.get().getSession();
+      if (!session) {
+        console.error(new Error('No authentication'));
+        return config;
+      }
+
+      const urlObj = new URL(`${config.baseURL}${config.url}`);
+      urlObj.searchParams.append('auth', session.idToken);
+
+      config.url = `${urlObj.pathname}${urlObj.search}`;
+      return config;
+    });
   }
 
   public async getExpenses({
     id,
   }: GetExpensesParams): Promise<GetExpensesResponse> {
+    const session = await SessionStorage.get().getSession();
+    if (!session) {
+      throw new Error('No authentication');
+    }
+
     const { data } = await this.request.get<Record<
       string,
       Omit<ExpenseObj, 'id'>
-    > | null>('/expenses.json');
+    > | null>(`/expenses.json?orderBy="ownerId"&equalTo="${session.uid}"`);
 
     if (!data) {
       return [];
@@ -46,7 +66,15 @@ export class ExpensesController extends BaseController {
   public async createExpense({
     expense,
   }: CreateExpenseParams): Promise<CreateExpenseResponse> {
-    const { data } = await this.request.post('/expenses.json', expense);
+    const session = await SessionStorage.get().getSession();
+    if (!session) {
+      throw new Error('No authentication');
+    }
+
+    const { data } = await this.request.post(`/expenses.json?`, {
+      ownerId: session.uid,
+      ...expense,
+    });
 
     return { id: data.name };
   }
@@ -55,7 +83,15 @@ export class ExpensesController extends BaseController {
     id,
     expense,
   }: UpdateExpenseParams): Promise<UpdateExpenseResponse> {
-    const { data } = await this.request.put(`/expenses/${id}.json`, expense);
+    const session = await SessionStorage.get().getSession();
+    if (!session) {
+      throw new Error('No authentication');
+    }
+
+    const { data } = await this.request.put(`/expenses/${id}.json`, {
+      ownerId: session.uid,
+      ...expense,
+    });
 
     return data;
   }

@@ -1,7 +1,14 @@
+import { useAuthContext } from '@store/authContext';
 import { Colors } from '@ui/constants/colors';
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 
 export default function AppLayout() {
+  const { isAuthenticated } = useAuthContext();
+
+  if (!isAuthenticated) {
+    return <Redirect href="/login" />;
+  }
+
   return (
     <Stack
       screenOptions={{

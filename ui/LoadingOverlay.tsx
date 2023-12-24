@@ -7,8 +7,9 @@ type Props = { message?: string };
 export const LoadingOverlay: FC<Props> = ({ message }) => {
   return (
     <View style={styles.container}>
-      {!!message && <Text style={styles.message}>{message}</Text>}
       <ActivityIndicator size="large" color={Colors.white} />
+
+      {!!message && <Text style={styles.message}>{message}</Text>}
     </View>
   );
 };
@@ -24,6 +25,8 @@ const styles = StyleSheet.create({
 
   message: {
     fontSize: 16,
-    marginBottom: 12,
+    marginTop: 12,
+    color: Colors.text_primary,
+    textAlign: 'center',
   },
 });

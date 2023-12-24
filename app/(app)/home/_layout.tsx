@@ -1,9 +1,12 @@
-import { Colors } from '@ui/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuthContext } from '@store/authContext';
 import { IconButton } from '@ui/IconButton';
+import { Colors } from '@ui/constants/colors';
 import { Tabs, router } from 'expo-router';
 
 export default function HomeLayout() {
+  const { logout } = useAuthContext();
+
   return (
     <Tabs
       sceneContainerStyle={{
@@ -19,6 +22,13 @@ export default function HomeLayout() {
             iconName="add"
             color={tintColor}
             onPress={() => router.push(`/manage-expense/`)}
+          />
+        ),
+        headerLeft: ({ tintColor }) => (
+          <IconButton
+            iconName="exit-outline"
+            color={tintColor}
+            onPress={() => logout()}
           />
         ),
       }}
