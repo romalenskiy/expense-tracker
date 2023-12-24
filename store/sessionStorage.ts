@@ -4,8 +4,10 @@ enum AsyncStorageKey {
   session = 'session',
 }
 
-type Session = {
+export type Session = {
   idToken: string;
+  refreshToken: string;
+  expiresIn: string;
   uid: string;
 };
 
@@ -32,16 +34,17 @@ export class SessionStorage {
     }
   }
 
-  public setSession(session: Session) {
+  public async setSession(session: Session): Promise<void | null> {
     try {
       const dataString = JSON.stringify(session);
-      AsyncStorage.setItem(AsyncStorageKey.session, dataString);
+      return AsyncStorage.setItem(AsyncStorageKey.session, dataString);
     } catch (error) {
       console.error('AppAsyncStorage: stringify error', error);
+      return null;
     }
   }
 
   public removeSession() {
-    AsyncStorage.removeItem(AsyncStorageKey.session);
+    return AsyncStorage.removeItem(AsyncStorageKey.session);
   }
 }
