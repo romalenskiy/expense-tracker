@@ -6,7 +6,8 @@ You can record and edit your expenses. Firebase is responsible for storage and a
 
 ## Demo
 
-TODO
+https://github.com/romalenskiy/expense-tracker/assets/34841033/26697900-657c-4eb1-93e0-fb3110b58d9a
+
 
 ## Technologies
 
