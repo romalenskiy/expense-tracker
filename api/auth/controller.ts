@@ -1,12 +1,12 @@
 import { BaseController } from '@api/baseController';
-import { SessionStorage } from '@store/sessionStorage';
-import axios, { AxiosError } from 'axios';
+import { AxiosError, CreateAxiosDefaults } from 'axios';
 
 type SignupParams = { email: string; password: string };
 type SignupResponse = {
   idToken: string;
   refreshToken: string;
-  expiresIn: string;
+  // ms
+  expiresIn: number;
   uid: string;
 };
 
@@ -14,14 +14,8 @@ type LoginParams = { email: string; password: string };
 type LoginResponse = {
   idToken: string;
   refreshToken: string;
-  expiresIn: string;
-  uid: string;
-};
-
-type RefreshTokenResponse = {
-  idToken: string;
-  refreshToken: string;
-  expiresIn: string;
+  // ms
+  expiresIn: number;
   uid: string;
 };
 
@@ -29,10 +23,15 @@ export class AuthController extends BaseController {
   protected static self?: AuthController;
   public static get: () => AuthController;
 
-  private readonly API_KEY = 'AIzaSyCxE1ywA0_yklLmzgF6dHXu7P7ZR6xjk6c';
+  private static axiosConfig: CreateAxiosDefaults = {
+    baseURL: 'https://identitytoolkit.googleapis.com',
+  };
 
   constructor() {
-    super({ baseURL: 'https://identitytoolkit.googleapis.com' });
+    super({
+      axiosConfig: AuthController.axiosConfig,
+      withAuth: false,
+    });
 
     this.request.interceptors.request.use((config) => {
       const urlObj = new URL(`${config.baseURL}${config.url}`);
@@ -73,7 +72,7 @@ export class AuthController extends BaseController {
       return {
         idToken: data.idToken,
         refreshToken: data.refreshToken,
-        expiresIn: data.expiresIn,
+        expiresIn: Number(data.expiresIn) * 1000,
         uid: data.localId,
       };
     } catch (error) {
@@ -90,29 +89,5 @@ export class AuthController extends BaseController {
 
   public async login(params: LoginParams): Promise<LoginResponse> {
     return this.performAuth('/v1/accounts:signInWithPassword', params);
-  }
-
-  public async refreshToken(): Promise<RefreshTokenResponse> {
-    const session = await SessionStorage.get().getSession();
-    if (!session) {
-      throw new Error('No authentication');
-    }
-
-    // Чтобы проставился валидный Content-Type: application/x-www-form-urlencoded
-    const params = new URLSearchParams();
-    params.append('grant_type', 'refresh_token');
-    params.append('refresh_token', session.refreshToken);
-
-    const { data } = await axios.post(
-      `https://securetoken.googleapis.com/v1/token?key=${this.API_KEY}`,
-      params,
-    );
-
-    return {
-      idToken: data.id_token,
-      refreshToken: data.refresh_token,
-      expiresIn: data.expires_in,
-      uid: data.user_id,
-    };
   }
 }

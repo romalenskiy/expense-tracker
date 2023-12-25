@@ -1,5 +1,6 @@
 import { BaseController } from '@api/baseController';
 import { SessionStorage } from '@store/sessionStorage';
+import { CreateAxiosDefaults } from 'axios';
 
 import { ExpenseObj } from './types';
 
@@ -19,25 +20,13 @@ export class ExpensesController extends BaseController {
   protected static self?: ExpensesController;
   public static get: () => ExpensesController;
 
+  private static axiosConfgig: CreateAxiosDefaults = {
+    baseURL:
+      'https://expense-tracker-35fe9-default-rtdb.europe-west1.firebasedatabase.app',
+  };
+
   constructor() {
-    super({
-      baseURL:
-        'https://expense-tracker-35fe9-default-rtdb.europe-west1.firebasedatabase.app',
-    });
-
-    this.request.interceptors.request.use(async (config) => {
-      const session = await SessionStorage.get().getSession();
-      if (!session) {
-        console.error(new Error('No authentication'));
-        return config;
-      }
-
-      const urlObj = new URL(`${config.baseURL}${config.url}`);
-      urlObj.searchParams.append('auth', session.idToken);
-
-      config.url = `${urlObj.pathname}${urlObj.search}`;
-      return config;
-    });
+    super({ axiosConfig: ExpensesController.axiosConfgig });
   }
 
   public async getExpenses({

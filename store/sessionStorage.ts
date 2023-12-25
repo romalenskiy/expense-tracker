@@ -7,7 +7,9 @@ enum AsyncStorageKey {
 export type Session = {
   idToken: string;
   refreshToken: string;
-  expiresIn: string;
+  // ms
+  expiresIn: number;
+  loginTs: number;
   uid: string;
 };
 

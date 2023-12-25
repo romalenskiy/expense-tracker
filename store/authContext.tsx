@@ -1,5 +1,4 @@
 import { queryClient } from '@api/QueryProvider';
-import { AuthController } from '@api/auth/controller';
 import {
   ReactNode,
   createContext,
@@ -7,7 +6,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 
@@ -16,7 +14,7 @@ import { Session, SessionStorage } from './sessionStorage';
 type AuthContextData = {
   isAuthenticated: boolean;
   isTryingInitLogin: boolean;
-  login: (session: Session) => void;
+  login: (session: Omit<Session, 'loginTs'>) => void;
   logout: () => void;
 };
 
@@ -33,35 +31,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isTryingInitLogin, setIsTryingInitLogin] = useState(true);
 
-  const intervals = useRef<number[]>([]);
-
-  const performRefreshToken = useCallback(async () => {
-    const refreshedSession = await AuthController.get().refreshToken();
-    return SessionStorage.get().setSession(refreshedSession);
-  }, []);
-
-  const intervalRefreshToken = useCallback(async () => {
-    const session = await SessionStorage.get().getSession();
-    if (!session) {
-      return;
-    }
-
-    const delay = (Number(session.expiresIn) - 10) * 1000;
-    const interval = setInterval(
-      performRefreshToken,
-      delay,
-    ) as unknown as number;
-
-    intervals.current.push(interval);
-  }, [performRefreshToken]);
-
-  const clearIntervals = useCallback(() => {
-    while (intervals.current.length) {
-      const id = intervals.current.pop();
-      clearInterval(id);
-    }
-  }, [intervals, performRefreshToken]);
-
   useEffect(() => {
     const onInit = async () => {
       try {
@@ -70,10 +39,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
 
-        await performRefreshToken();
-
-        intervalRefreshToken();
-
         setIsAuthenticated(true);
       } finally {
         setIsTryingInitLogin(false);
@@ -81,30 +46,27 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     };
 
     onInit();
-
-    return () => clearIntervals();
   }, []);
 
-  const login = useCallback(
-    async (session: Session) => {
-      await SessionStorage.get().setSession(session);
+  const login: AuthContextData['login'] = useCallback(
+    async (session) => {
+      await SessionStorage.get().setSession({
+        ...session,
+        loginTs: Date.now(),
+      });
 
       setIsAuthenticated(true);
-
-      intervalRefreshToken();
     },
     [setIsAuthenticated],
   );
 
-  const logout = useCallback(() => {
+  const logout: AuthContextData['logout'] = useCallback(() => {
     SessionStorage.get().removeSession();
 
     setIsAuthenticated(false);
 
     queryClient.clear();
-
-    clearIntervals();
-  }, [setIsAuthenticated, clearIntervals]);
+  }, [setIsAuthenticated]);
 
   const value = useMemo<AuthContextData>(() => {
     return {
