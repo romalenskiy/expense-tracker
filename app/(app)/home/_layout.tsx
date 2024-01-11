@@ -54,6 +54,14 @@ export default function HomeLayout() {
           ),
         }}
       />
+
+      {/* To hide tabs in builded app */}
+      <Tabs.Screen
+        name="_components"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
