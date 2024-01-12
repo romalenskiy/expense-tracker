@@ -20,6 +20,8 @@ export default function AppLayout() {
         },
       }}
     >
+      <Stack.Screen name="index" redirect />
+
       <Stack.Screen name="home" options={{ headerShown: false }} />
 
       <Stack.Screen

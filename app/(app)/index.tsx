@@ -1,5 +1,5 @@
-import { Redirect } from 'expo-router';
+import { Slot } from 'expo-router';
 
 export default function RootScreen() {
-  return <Redirect href="/home/" />;
+  return <Slot />;
 }
