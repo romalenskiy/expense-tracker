@@ -9,6 +9,7 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "ios:clear": "npx expo run:ios --no-build-cache",
     "build:ios": "npx expo prebuild --clean --platform ios",
     "web": "expo start --web",
     "lint": "npx eslint .",
