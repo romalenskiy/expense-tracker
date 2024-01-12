@@ -24,8 +24,9 @@
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#3e04c3"
+      },
+      "package": "com.romalenskiy.expensetracker"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -36,6 +37,14 @@
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c22bcf4d-5bcc-4549-b224-26c3ea32cdd8"
+      }
     }
   }
 }
